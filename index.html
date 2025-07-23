@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>WebGIS - Esri Satélite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+    #header {
+      width: 100vw;
+      background: #fff;
+      text-align: center;
+      padding: 10px 0 5px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      z-index: 1000;
+      flex: 0 0 auto;
+    }
+    #header img {
+      max-width: 250px;
+      height: auto;
+      display: inline-block;
+    }
+    #map {
+      flex: 1 1 auto;
+      width: 100vw;
+      height: 100%;
+      min-height: 0;
+    }
+    .leaflet-control-upload {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      padding: 4px 6px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .leaflet-control-upload input[type="file"] {
+      display: none;
+    }
+    .leaflet-control-upload label {
+      cursor: pointer;
+      margin: 0;
+      padding: 0 6px;
+      font-size: 18px;
+      color: #1976d2;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .leaflet-control-upload label:hover {
+      color: #0d47a1;
+    }
+    .leaflet-control-upload .icon-upload {
+      font-size: 20px;
+      margin-right: 2px;
+    }
+    .leaflet-control-clear-upload {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      padding: 4px 6px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .leaflet-control-clear-upload button {
+      background: none;
+      border: none;
+      color: #d32f2f;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: 500;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .leaflet-control-clear-upload button:hover {
+      color: #fff;
+      background: #d32f2f;
+      border-radius: 3px;
+    }
+    .leaflet-control-clear-upload .icon-clear {
+      font-size: 18px;
+      margin-right: 2px;
+    }
+    .leaflet-control-wmslist {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      padding: 4px 6px;
+      margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      min-width: 120px;
+      font-size: 14px;
+    }
+    .leaflet-control-wmslist label {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+    .leaflet-control-wmslist select {
+      width: 100%;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .leaflet-control-wmslist button {
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid #1976d2;
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+    .leaflet-control-wmslist button:hover {
+      background: #0d47a1;
+      border-color: #0d47a1;
+    }
+    .leaflet-control-dms {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      padding: 4px 6px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-direction: column;
+      min-width: 40px;
+    }
+    .leaflet-control-dms-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #1976d2;
+      padding: 0 4px 0 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      gap: 4px;
+    }
+    .leaflet-control-dms-btn:hover {
+      color: #0d47a1;
+    }
+    .leaflet-control-dms-btn .icon {
+      font-size: 20px;
+      margin-right: 2px;
+    }
+    .leaflet-control-dms-form {
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 4px;
+      font-size: 13px;
+      min-width: 180px;
+    }
+    .leaflet-control-dms-form input {
+      width: 2.5em;
+      font-size: 13px;
+      margin-right: 2px;
+      text-align: right;
+    }
+    .leaflet-control-dms-form label {
+      font-size: 12px;
+      margin-right: 4px;
+    }
+    .leaflet-control-dms-form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .leaflet-control-dms-form button {
+      margin-top: 4px;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid #1976d2;
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+    }
+    .leaflet-control-dms-form button:hover {
+      background: #0d47a1;
+      border-color: #0d47a1;
+    }
+    .leaflet-control-dms-form .btn-limpar {
+      background: #fff;
+      color: #1976d2;
+      border: 1px solid #1976d2;
+      margin-left: 8px;
+    }
+    .leaflet-control-dms-form .btn-limpar:hover {
+      background: #e3e3e3;
+      color: #0d47a1;
+      border-color: #0d47a1;
+    }
+    @media (max-width: 600px) {
+      #header img { max-width: 150px; }
+      .leaflet-control-upload label { font-size: 15px; }
+      .leaflet-control-dms-form { min-width: 120px; }
+      .leaflet-control-dms-btn { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <img src="bom_futuro.png" alt="Logo Bom Futuro" />
+  </div>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+  <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+  <script>
+    // Esri World Imagery (Satélite)
+    var esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    });
+
+    // Exemplo de outra camada base (OpenStreetMap)
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    });
+
+    // Inicializa o mapa com a camada Esri Satélite
+    var map = L.map('map', {
+      center: [-12.5, -55.7],
+      zoom: 4,
+      layers: [esriSat]
+    });
+
+    // Controle de camadas (menu à esquerda)
+    var baseMaps = {
+      "Esri Satélite": esriSat,
+      "OpenStreetMap": osm
+    };
+    var overlayMaps = {};
+    var layerControl = L.control.layers(baseMaps, overlayMaps, { position: 'topleft' }).addTo(map);
+
+    // Adiciona automaticamente as camadas GeoJSON locais
+    var geojsonFiles = [
+      {nome: 'AIR', arquivo: 'AIR.geojson', cor: '#000000'},
+      {nome: 'APP', arquivo: 'APP.geojson', cor: '#1976d2'},
+      {nome: 'AVN', arquivo: 'AVN.geojson', cor: '#388e3c'},
+      {nome: 'CONSOLIDADA', arquivo: 'CONSOLIDADA.geojson', cor: '#ffd600'},
+      {nome: 'APPD', arquivo: 'APPD.geojson', cor: '#8e24aa'}
+    ];
+
+    geojsonFiles.forEach(function(info, idx) {
+      fetch(info.arquivo)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          var layer = L.geoJSON(data, {
+            style: function() {
+              return {
+                color: info.cor,
+                weight: 2,
+                fillOpacity: 0.2
+              };
+            },
+            onEachFeature: function(feature, layer) {
+              if (feature.properties) {
+                var html = '<table>';
+                for (var key in feature.properties) {
+                  html += '<tr><td><b>' + key + '</b></td><td>' + feature.properties[key] + '</td></tr>';
+                }
+                html += '</table>';
+                layer.bindPopup(html);
+              }
+            }
+          });
+          overlayMaps[info.nome] = layer;
+          layerControl.addOverlay(layer, info.nome);
+          if (idx === 0) {
+            layer.addTo(map);
+          }
+        })
+        .catch(function(error) {
+          console.error('Erro ao carregar ' + info.arquivo + ':', error);
+        });
+    });
+
+    // Adiciona camadas WFS do serviço SEMA MT
+    function addWFSLayer(nome, typeName, color) {
+      var wfsUrl = 'https://geo.sema.mt.gov.br/geoserver/ows?authkey=541085de-9a2e-454e-bdba-eb3d57a2f492' +
+        '&service=WFS&version=1.0.0&request=GetFeature&typeName=' + typeName +
+        '&outputFormat=application/json&srsName=EPSG:4326';
+
+      fetch(wfsUrl)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          var layer = L.geoJSON(data, {
+            style: { color: color, weight: 2, fillOpacity: 0.2 },
+            onEachFeature: function(feature, layer) {
+              if (feature.properties) {
+                var html = '<table>';
+                for (var key in feature.properties) {
+                  html += '<tr><td><b>' + key + '</b></td><td>' + feature.properties[key] + '</td></tr>';
+                }
+                html += '</table>';
+                layer.bindPopup(html);
+              }
+            }
+          });
+          overlayMaps[nome + ' (WFS)'] = layer;
+          layerControl.addOverlay(layer, nome + ' (WFS)');
+        })
+        .catch(function(error) {
+          console.error('Erro ao carregar WFS ' + typeName + ':', error);
+        });
+    }
+
+    addWFSLayer('APP', 'geoportal:APP', '#1976d2');
+    addWFSLayer('AVN', 'geoportal:AVN', '#388e3c');
+    addWFSLayer('AIR', 'geoportal:AIR', '#000000');
+    addWFSLayer('CONSOLIDADA', 'geoportal:CONSOLIDADA', '#ffd600');
+    addWFSLayer('APPD', 'geoportal:APPD', '#8e24aa');
+
+    // Adiciona camada WMS SIMCAR
+    var simcarWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:MVW_REQUERIMENTO_ATP',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['SIMCAR'] = simcarWms;
+    layerControl.addOverlay(simcarWms, 'SIMCAR');
+
+    // Adiciona camada WMS Biomas
+    var biomasWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:BIOMAS_MT',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Biomas'] = biomasWms;
+    layerControl.addOverlay(biomasWms, 'Biomas');
+
+    // Adiciona camada WMS DLA
+    var dlaWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:DLA',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['DLA'] = dlaWms;
+    layerControl.addOverlay(dlaWms, 'DLA');
+
+    // Adiciona camada WMS APF
+    var apfWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:MVW_APF_GEOMETRIA_REGULAR',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['APF'] = apfWms;
+    layerControl.addOverlay(apfWms, 'APF');
+
+    // Adiciona camada WMS Embargos SEMA
+    var embargosWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:AREAS_EMBARGADAS_SEMA',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Embargos SEMA'] = embargosWms;
+    layerControl.addOverlay(embargosWms, 'Embargos SEMA');
+
+    // Adiciona camada WMS Embargos SIGA
+    var embargosSigaWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:AREA_EMBARGADA_SIGA_POLIGONO',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Embargos SIGA'] = embargosSigaWms;
+    layerControl.addOverlay(embargosSigaWms, 'Embargos SIGA');
+
+    // Adiciona camada WMS Unidades de Conservação
+    var ucWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:UNIDADES_CONSERVACAO',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Unidades de Conservação'] = ucWms;
+    layerControl.addOverlay(ucWms, 'Unidades de Conservação');
+
+    // Adiciona camada WMS Amortecimento Unidades de Conservação
+    var ucAmortecimentoWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:UC_AMORTECIMENTO',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Amortecimento Unidades de Conservação'] = ucAmortecimentoWms;
+    layerControl.addOverlay(ucAmortecimentoWms, 'Amortecimento Unidades de Conservação');
+
+    // Adiciona camada WMS Uso Consolidado
+    var usoConsolidadoWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:USO_CONSOLIDADO',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Uso Consolidado'] = usoConsolidadoWms;
+    layerControl.addOverlay(usoConsolidadoWms, 'Uso Consolidado');
+
+    // Adiciona camada WMS Vegetação IBGE
+    var vegetacaoIbgeWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:VEGETACAO_IBGE',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Vegetação IBGE'] = vegetacaoIbgeWms;
+    layerControl.addOverlay(vegetacaoIbgeWms, 'Vegetação IBGE');
+
+    // Adiciona camada WMS Vegetação RADAM
+    var vegetacaoRadamWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:VEGETACAO_RADAMBRASIL',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Vegetação RADAM'] = vegetacaoRadamWms;
+    layerControl.addOverlay(vegetacaoRadamWms, 'Vegetação RADAM');
+
+    // Adiciona camada WMS Limites Municipais
+    var limitesMunicipaisWms = L.tileLayer.wms('https://geo.sema.mt.gov.br/geoserver/ows?', {
+      layers: 'Geoportal:LIM_MUNICIPIOS_MT',
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS SEMA MT',
+      authkey: '541085de-9a2e-454e-bdba-eb3d57a2f492'
+    });
+    overlayMaps['Limites Municipais'] = limitesMunicipaisWms;
+    layerControl.addOverlay(limitesMunicipaisWms, 'Limites Municipais');
+
+    // Ferramenta de medição (sistema métrico, à esquerda)
+    L.control.measure({
+      position: 'topleft',
+      primaryLengthUnit: 'meters',
+      secondaryLengthUnit: 'kilometers',
+      primaryAreaUnit: 'sqmeters',
+      secondaryAreaUnit: 'hectares',
+      activeColor: '#db4a29',
+      completedColor: '#9b2d14'
+    }).addTo(map);
+
+    // Botão customizado de upload (controle Leaflet)
+    var uploadedLayers = [];
+    var UploadControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-upload leaflet-bar');
+        var input = L.DomUtil.create('input', '', container);
+        input.type = 'file';
+        input.id = 'file-input';
+        input.accept = '.geojson,.json,.kml,.zip';
+        input.multiple = true;
+        var label = L.DomUtil.create('label', '', container);
+        label.htmlFor = 'file-input';
+        label.innerHTML = '<span class="icon-upload">&#8682;</span> <span style="font-size:13px;">Upload</span>';
+        L.DomEvent.disableClickPropagation(container);
+        return container;
+      }
+    });
+    map.addControl(new UploadControl());
+
+    // Botão Limpar Upload (controle Leaflet)
+    var ClearUploadControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-clear-upload leaflet-bar');
+        var btn = L.DomUtil.create('button', '', container);
+        btn.type = 'button';
+        btn.title = 'Limpar Upload';
+        btn.innerHTML = '<span class="icon-clear">&#10006;</span> Limpar Upload';
+        btn.onclick = function() {
+          uploadedLayers.forEach(function(obj) {
+            map.removeLayer(obj.layer);
+            layerControl.removeLayer(obj.layer);
+          });
+          uploadedLayers = [];
+        };
+        L.DomEvent.disableClickPropagation(container);
+        return container;
+      }
+    });
+    map.addControl(new ClearUploadControl());
+
+    // Botão de consulta de coordenadas DMS (controle Leaflet)
+    var DMSControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-dms leaflet-bar');
+        var btn = L.DomUtil.create('button', 'leaflet-control-dms-btn', container);
+        btn.type = 'button';
+        btn.title = 'Digitar Coordenadas';
+        btn.innerHTML = '<span class="icon">📍</span> Digitar Coordenadas';
+        var form = L.DomUtil.create('form', 'leaflet-control-dms-form', container);
+        form.innerHTML = `
+          <div class='leaflet-control-dms-form-row'>
+            <label>Lat:</label>
+            <input type='number' step='1' min='-90' max='90' id='lat-g' placeholder='G' required />°
+            <input type='number' step='1' min='0' max='59' id='lat-m' placeholder='M' required />'
+            <input type='number' step='0.01' min='0' max='59.999' id='lat-s' placeholder='S' required />"
+            <select id='lat-dir'><option value='N'>N</option><option value='S'>S</option></select>
+          </div>
+          <div class='leaflet-control-dms-form-row'>
+            <label>Lon:</label>
+            <input type='number' step='1' min='-180' max='180' id='lon-g' placeholder='G' required />°
+            <input type='number' step='1' min='0' max='59' id='lon-m' placeholder='M' required />'
+            <input type='number' step='0.01' min='0' max='59.999' id='lon-s' placeholder='S' required />"
+            <select id='lon-dir'><option value='W'>W</option><option value='E'>E</option></select>
+          </div>
+          <div style='display:flex;gap:4px;'>
+            <button type='submit'>Ir</button>
+            <button type='button' class='btn-limpar'>Limpar</button>
+          </div>
+        `;
+        btn.onclick = function(e) {
+          e.preventDefault();
+          form.style.display = (form.style.display === 'flex') ? 'none' : 'flex';
+        };
+        L.DomEvent.disableClickPropagation(container);
+        form.onsubmit = function(e) {
+          e.preventDefault();
+          // Pega valores do formulário
+          var latG = parseInt(form.querySelector('#lat-g').value) || 0;
+          var latM = parseInt(form.querySelector('#lat-m').value) || 0;
+          var latS = parseFloat(form.querySelector('#lat-s').value) || 0;
+          var latDir = form.querySelector('#lat-dir').value;
+          var lonG = parseInt(form.querySelector('#lon-g').value) || 0;
+          var lonM = parseInt(form.querySelector('#lon-m').value) || 0;
+          var lonS = parseFloat(form.querySelector('#lon-s').value) || 0;
+          var lonDir = form.querySelector('#lon-dir').value;
+          // Converte DMS para decimal
+          var lat = Math.abs(latG) + latM/60 + latS/3600;
+          if (latDir === 'S' || latG < 0) lat = -lat;
+          var lon = Math.abs(lonG) + lonM/60 + lonS/3600;
+          if (lonDir === 'W' || lonG < 0) lon = -lon;
+          // Adiciona marcador
+          if (window.dmsMarker) map.removeLayer(window.dmsMarker);
+          window.dmsMarker = L.marker([lat, lon]).addTo(map).bindPopup('Lat: ' + lat.toFixed(6) + '<br>Lon: ' + lon.toFixed(6)).openPopup();
+          map.setView([lat, lon], 14);
+          form.style.display = 'none';
+        };
+        // Botão Limpar
+        form.querySelector('.btn-limpar').onclick = function() {
+          if (window.dmsMarker) {
+            map.removeLayer(window.dmsMarker);
+            window.dmsMarker = null;
+          }
+          form.style.display = 'none';
+        };
+        return container;
+      }
+    });
+    map.addControl(new DMSControl());
+
+    // Função para adicionar camada ao mapa e ao controle
+    function addLayerToMap(layer, name) {
+      overlayMaps[name] = layer;
+      layerControl.addOverlay(layer, name);
+      map.addLayer(layer);
+      if (layer.getBounds && layer.getBounds().isValid()) {
+        map.fitBounds(layer.getBounds());
+      }
+    }
+
+    // Manipula upload de arquivos
+    document.body.addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'file-input') {
+        Array.from(e.target.files).forEach(function(file) {
+          var name = file.name;
+          var ext = name.split('.').pop().toLowerCase();
+          var reader = new FileReader();
+          if (ext === 'geojson' || ext === 'json') {
+            reader.onload = function(event) {
+              var geojson = JSON.parse(event.target.result);
+              var layer = L.geoJSON(geojson);
+              addLayerToMap(layer, name);
+              uploadedLayers.push({layer, name});
+            };
+            reader.readAsText(file);
+          } else if (ext === 'kml') {
+            reader.onload = function(event) {
+              var kmlText = event.target.result;
+              var kmlLayer = omnivore.kml.parse(kmlText);
+              addLayerToMap(kmlLayer, name);
+              uploadedLayers.push({layer: kmlLayer, name});
+            };
+            reader.readAsText(file);
+          } else if (ext === 'zip') {
+            // Shapefile ZIP
+            reader.onload = function(event) {
+              shp(event.target.result).then(function(geojson) {
+                var layer = L.geoJSON(geojson);
+                addLayerToMap(layer, name);
+                uploadedLayers.push({layer, name});
+              }).catch(function(err) {
+                alert('Erro ao ler o shapefile: ' + err);
+              });
+            };
+            reader.readAsArrayBuffer(file);
+          } else {
+            alert('Formato não suportado: ' + name);
+          }
+        });
+        // Limpa o input para permitir novo upload do mesmo arquivo
+        e.target.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
