@@ -19,25 +19,33 @@
       flex-direction: column;
       height: 100vh;
       width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
     #header {
       width: 100vw;
       background: #fff;
       text-align: center;
-      padding: 10px 0 5px 0;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 2px 0 1px 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
       z-index: 1000;
       flex: 0 0 auto;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #header img {
-      max-width: 250px;
+      max-width: 80px;
+      max-height: 30px;
       height: auto;
       display: inline-block;
     }
     #map {
       flex: 1 1 auto;
-      width: 100vw;
-      height: 100%;
+      width: 100%;
+      height: calc(100vh - 40px);
       min-height: 0;
     }
     .leaflet-control-upload {
@@ -219,24 +227,334 @@
       color: #0d47a1;
       border-color: #0d47a1;
     }
+    
+    /* Controle de filtro AIR */
+    .leaflet-control-filter {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      padding: 8px;
+      margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 200px;
+      font-size: 13px;
+    }
+    
+    .leaflet-control-filter h4 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      color: #1976d2;
+      font-weight: 600;
+    }
+    
+    .leaflet-control-filter select {
+      width: 100%;
+      font-size: 12px;
+      padding: 4px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+    
+    .leaflet-control-filter button {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      border: 1px solid #1976d2;
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    
+    .leaflet-control-filter button:hover {
+      background: #0d47a1;
+      border-color: #0d47a1;
+    }
+    
+    .leaflet-control-filter .btn-limpar-filtro {
+      background: #fff;
+      color: #d32f2f;
+      border: 1px solid #d32f2f;
+    }
+    
+    .leaflet-control-filter .btn-limpar-filtro:hover {
+      background: #d32f2f;
+      color: #fff;
+    }
     @media (max-width: 600px) {
-      #header img { max-width: 150px; }
+      #header { height: 30px; }
+      #header img { max-width: 60px; max-height: 20px; }
+      #map { height: calc(100vh - 30px); }
       .leaflet-control-upload label { font-size: 15px; }
       .leaflet-control-dms-form { min-width: 120px; }
       .leaflet-control-dms-btn { font-size: 13px; }
     }
+    
+    /* Controle específico para elementos na parte inferior */
+    .leaflet-bottom {
+      max-width: 100% !important;
+    }
+    
+    .leaflet-bottom .leaflet-control {
+      max-width: 300px !important;
+    }
+    
+    /* CSS de emergência para qualquer elemento que esteja ocupando toda a tela */
+    * {
+      max-width: 100% !important;
+    }
+    
+    /* Específico para elementos na parte inferior */
+    div[style*="bottom: 0"], 
+    div[style*="position: fixed"], 
+    div[style*="position: absolute"] {
+      max-width: 300px !important;
+      max-height: 200px !important;
+      overflow: hidden !important;
+    }
+    
+    /* Controle específico do plugin de medição */
+    .leaflet-measure-control {
+      position: absolute !important;
+      top: 10px !important;
+      left: 10px !important;
+      bottom: auto !important;
+      width: auto !important;
+      max-width: 300px !important;
+    }
+    
+    .leaflet-measure-control .measure-tooltip {
+      max-width: 200px !important;
+      font-size: 12px !important;
+    }
+    
+    .leaflet-measure-control .measure-area {
+      max-width: 200px !important;
+      font-size: 12px !important;
+    }
+    
+    .leaflet-measure-control .measure-results {
+      max-height: 200px !important;
+      overflow-y: auto !important;
+    }
+    
+    .leaflet-measure-control .measure-panel {
+      max-width: 250px !important;
+      max-height: 300px !important;
+      overflow-y: auto !important;
+    }
+    
+    /* Estilização dos pop-ups das camadas */
+    .leaflet-popup-content-wrapper {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-radius: 8px !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+      border: 1px solid #ddd !important;
+      backdrop-filter: blur(5px) !important;
+    }
+    
+    .leaflet-popup-content {
+      margin: 12px 16px !important;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+      font-size: 14px !important;
+      line-height: 1.4 !important;
+      color: #333 !important;
+      min-width: 200px !important;
+    }
+    
+    .leaflet-popup-content table {
+      border-collapse: collapse !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+    
+    .leaflet-popup-content table td {
+      padding: 6px 8px !important;
+      border-bottom: 1px solid #eee !important;
+      vertical-align: top !important;
+    }
+    
+    .leaflet-popup-content table td:first-child {
+      font-weight: 600 !important;
+      color: #ffffff !important;
+      width: 40% !important;
+    }
+    
+    .leaflet-popup-content table td:last-child {
+      color: #ffffff !important;
+      width: 60% !important;
+    }
+    
+    .leaflet-popup-content table tr:last-child td {
+      border-bottom: none !important;
+    }
+    
+    .leaflet-popup-tip-container {
+      margin-top: -1px !important;
+    }
+    
+    .leaflet-popup-tip {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border: 1px solid #ddd !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .leaflet-popup-close-button {
+      color: #666 !important;
+      font-size: 18px !important;
+      font-weight: bold !important;
+      padding: 4px 8px !important;
+      border-radius: 50% !important;
+      transition: all 0.2s ease !important;
+    }
+    
+    .leaflet-popup-close-button:hover {
+      background: #f0f0f0 !important;
+      color: #333 !important;
+    }
+    
+    /* CSS específico para pop-ups customizados */
+    .custom-popup .leaflet-popup-content-wrapper {
+      background: rgba(0, 0, 0, 0.8) !important;
+      border-radius: 6px !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      backdrop-filter: blur(5px) !important;
+    }
+    
+    .custom-popup .leaflet-popup-content {
+      margin: 8px 12px !important;
+      font-family: Arial, sans-serif !important;
+      font-size: 13px !important;
+      line-height: 1.3 !important;
+      color: #ffffff !important;
+    }
+    
+    .custom-popup .leaflet-popup-content table td:first-child {
+      color: #ffffff !important;
+      font-weight: bold !important;
+    }
+    
+    .custom-popup .leaflet-popup-content table td:last-child {
+      color: #ffffff !important;
+    }
+    
+    .custom-popup .leaflet-popup-tip {
+      background: rgba(0, 0, 0, 0.8) !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
   </style>
 </head>
 <body>
-  <div id="header">
-    <img src="bom_futuro.png" alt="Logo Bom Futuro" />
+  <div id="login-screen" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-width: 400px; width: 90%;">
+      <img src="bom_futuro.png" alt="Logo Bom Futuro" style="max-width: 80px; margin-bottom: 15px;" />
+      <h2 style="color: #333; margin-bottom: 20px;">Acesso ao WebGIS</h2>
+      <form id="login-form" style="display: flex; flex-direction: column; gap: 15px;">
+        <div>
+          <label for="password" style="display: block; text-align: left; margin-bottom: 5px; color: #555; font-weight: 500;">Senha:</label>
+          <input type="password" id="password" placeholder="Digite a senha" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;" />
+        </div>
+        <button type="submit" style="background: #1976d2; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: 500; transition: background 0.3s;">Acessar</button>
+      </form>
+      <div id="error-message" style="color: #d32f2f; margin-top: 10px; font-size: 14px; display: none;"></div>
+    </div>
   </div>
-  <div id="map"></div>
+  
+  <div id="map-container" style="display: none; height: 100vh; width: 100vw;">
+    <div id="header">
+      <img src="bom_futuro.png" alt="Logo Bom Futuro" />
+    </div>
+    <div id="map"></div>
+  </div>
+  <button id="toggle-controls" title="Mostrar/Ocultar Menus">&#9776;</button>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
   <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
   <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+  <style>
+    #toggle-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1200;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 22px;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: background 0.2s;
+      display: none; /* Inicialmente oculto */
+    }
+    #toggle-controls:hover {
+      background: #0d47a1;
+    }
+    .leaflet-left .leaflet-control {
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+    .leaflet-controls-hidden .leaflet-left .leaflet-control {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  </style>
   <script>
+    // Sistema de autenticação
+    const CORRECT_PASSWORD = 'webgis2024'; // Senha padrão - você pode alterar aqui
+    
+    // Função para verificar senha
+    function checkPassword(password) {
+      return password === CORRECT_PASSWORD;
+    }
+    
+    // Função para mostrar erro
+    function showError(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+    
+    // Função para esconder erro
+    function hideError() {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.style.display = 'none';
+    }
+    
+    // Função para mostrar o mapa
+    function showMap() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('map-container').style.display = 'block';
+      document.getElementById('toggle-controls').style.display = 'block'; // Mostra o botão de toggle
+      initMap(); // Inicializa o mapa após login
+    }
+    
+    // Manipulador do formulário de login
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      
+      if (checkPassword(password)) {
+        hideError();
+        showMap();
+      } else {
+        showError('Senha incorreta. Tente novamente.');
+        document.getElementById('password').value = '';
+      }
+    });
+    
+    // Permitir login com Enter
+    document.getElementById('password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('login-form').dispatchEvent(new Event('submit'));
+      }
+    });
+    
     // Esri World Imagery (Satélite)
     var esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19,
@@ -249,17 +567,342 @@
       attribution: '© OpenStreetMap contributors'
     });
 
-    // Inicializa o mapa com a camada Esri Satélite
-    var map = L.map('map', {
-      center: [-12.5, -55.7],
-      zoom: 4,
-      layers: [esriSat]
+    // Camada base Planet
+    var planet = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
     });
+
+    // Camadas Planet adicionais
+    var planet2024_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2024_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2023_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2023_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2022_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2022_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2021_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2021_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2020_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2020_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2019_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2019_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2018_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2018_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2017_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2017_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2016_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    var planet2016_06 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_06_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{
+        maxZoom: 19,
+        attribution: '© Planet'
+    });
+
+    // Planet 2025 - todos os meses
+    var planet2025_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2025_12 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2025_12_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2024 - todos os meses
+    var planet2024_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2024_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2024_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2023 - todos os meses
+    var planet2023_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2023_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2023_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2022 - todos os meses
+    var planet2022_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2022_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2022_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2021 - todos os meses
+    var planet2021_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2021_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2021_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2020 - todos os meses
+    var planet2020_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2020_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2020_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2019 - todos os meses
+    var planet2019_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2019_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2019_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2018 - todos os meses
+    var planet2018_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2018_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2018_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2017 - todos os meses
+    var planet2017_01 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_01_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_02 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_02_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_03 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_03_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_04 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_04_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_05 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_05_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2017_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2017_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+    // Planet 2016 - apenas de junho a dezembro
+    var planet2016_07 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_07_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2016_08 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_08_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2016_09 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_09_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2016_10 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_10_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+    var planet2016_11 = L.tileLayer('https://tiles.planet.com/basemaps/v1/planet-tiles/global_monthly_2016_11_mosaic/gmap/{z}/{x}/{y}.png?api_key=8e928c25f946486d9e41a279370b9739',{maxZoom: 19, attribution: '© Planet'});
+
+
+    // Função para inicializar o mapa (chamada após login)
+    function initMap() {
+      // Inicializa o mapa com a camada Esri Satélite
+      var map = L.map('map', {
+        center: [-12.5, -55.7],
+        zoom: 4,
+        layers: [esriSat]
+      });
 
     // Controle de camadas (menu à esquerda)
     var baseMaps = {
       "Esri Satélite": esriSat,
-      "OpenStreetMap": osm
+      "OpenStreetMap": osm,
+      "Planet 2025-06": planet,
+      "Planet 2025-05": planet2025_05,
+      "Planet 2025-04": planet2025_04,
+      "Planet 2025-03": planet2025_03,
+      "Planet 2025-02": planet2025_02,
+      "Planet 2025-01": planet2025_01,
+      "Planet 2024-12": planet2024_12,
+      "Planet 2024-11": planet2024_11,
+      "Planet 2024-10": planet2024_10,
+      "Planet 2024-09": planet2024_09,
+      "Planet 2024-08": planet2024_08,
+      "Planet 2024-07": planet2024_07,
+      "Planet 2024-06": planet2024_06,
+      "Planet 2024-05": planet2024_05,
+      "Planet 2024-04": planet2024_04,
+      "Planet 2024-03": planet2024_03,
+      "Planet 2024-02": planet2024_02,
+      "Planet 2024-01": planet2024_01,
+      "Planet 2023-12": planet2023_12,
+      "Planet 2023-11": planet2023_11,
+      "Planet 2023-10": planet2023_10,
+      "Planet 2023-09": planet2023_09,
+      "Planet 2023-08": planet2023_08,
+      "Planet 2023-07": planet2023_07,
+      "Planet 2023-06": planet2023_06,
+      "Planet 2023-05": planet2023_05,
+      "Planet 2023-04": planet2023_04,
+      "Planet 2023-03": planet2023_03,
+      "Planet 2023-02": planet2023_02,
+      "Planet 2023-01": planet2023_01,
+      "Planet 2022-12": planet2022_12,
+      "Planet 2022-11": planet2022_11,
+      "Planet 2022-10": planet2022_10,
+      "Planet 2022-09": planet2022_09,
+      "Planet 2022-08": planet2022_08,
+      "Planet 2022-07": planet2022_07,
+      "Planet 2022-06": planet2022_06,
+      "Planet 2022-05": planet2022_05,
+      "Planet 2022-04": planet2022_04,
+      "Planet 2022-03": planet2022_03,
+      "Planet 2022-02": planet2022_02,
+      "Planet 2022-01": planet2022_01,
+      "Planet 2021-12": planet2021_12,
+      "Planet 2021-11": planet2021_11,
+      "Planet 2021-10": planet2021_10,
+      "Planet 2021-09": planet2021_09,
+      "Planet 2021-08": planet2021_08,
+      "Planet 2021-07": planet2021_07,
+      "Planet 2021-06": planet2021_06,
+      "Planet 2021-05": planet2021_05,
+      "Planet 2021-04": planet2021_04,
+      "Planet 2021-03": planet2021_03,
+      "Planet 2021-02": planet2021_02,
+      "Planet 2021-01": planet2021_01,
+      "Planet 2020-12": planet2020_12,
+      "Planet 2020-11": planet2020_11,
+      "Planet 2020-10": planet2020_10,
+      "Planet 2020-09": planet2020_09,
+      "Planet 2020-08": planet2020_08,
+      "Planet 2020-07": planet2020_07,
+      "Planet 2020-06": planet2020_06,
+      "Planet 2020-05": planet2020_05,
+      "Planet 2020-04": planet2020_04,
+      "Planet 2020-03": planet2020_03,
+      "Planet 2020-02": planet2020_02,
+      "Planet 2020-01": planet2020_01,
+      "Planet 2019-12": planet2019_12,
+      "Planet 2019-11": planet2019_11,
+      "Planet 2019-10": planet2019_10,
+      "Planet 2019-09": planet2019_09,
+      "Planet 2019-08": planet2019_08,
+      "Planet 2019-07": planet2019_07,
+      "Planet 2019-06": planet2019_06,
+      "Planet 2019-05": planet2019_05,
+      "Planet 2019-04": planet2019_04,
+      "Planet 2019-03": planet2019_03,
+      "Planet 2019-02": planet2019_02,
+      "Planet 2019-01": planet2019_01,
+      "Planet 2018-12": planet2018_12,
+      "Planet 2018-11": planet2018_11,
+      "Planet 2018-10": planet2018_10,
+      "Planet 2018-09": planet2018_09,
+      "Planet 2018-08": planet2018_08,
+      "Planet 2018-07": planet2018_07,
+      "Planet 2018-06": planet2018_06,
+      "Planet 2018-05": planet2018_05,
+      "Planet 2018-04": planet2018_04,
+      "Planet 2018-03": planet2018_03,
+      "Planet 2018-02": planet2018_02,
+      "Planet 2018-01": planet2018_01,
+      "Planet 2017-12": planet2017_12,
+      "Planet 2017-11": planet2017_11,
+      "Planet 2017-10": planet2017_10,
+      "Planet 2017-09": planet2017_09,
+      "Planet 2017-08": planet2017_08,
+      "Planet 2017-07": planet2017_07,
+      "Planet 2017-06": planet2017_06,
+      "Planet 2017-05": planet2017_05,
+      "Planet 2017-04": planet2017_04,
+      "Planet 2017-03": planet2017_03,
+      "Planet 2017-02": planet2017_02,
+      "Planet 2017-01": planet2017_01,
+      "Planet 2016-12": planet2016_12,
+      "Planet 2016-11": planet2016_11,
+      "Planet 2016-10": planet2016_10,
+      "Planet 2016-09": planet2016_09,
+      "Planet 2016-08": planet2016_08,
+      "Planet 2016-07": planet2016_07,
+      "Planet 2016-06": planet2016_06
     };
     var overlayMaps = {};
     var layerControl = L.control.layers(baseMaps, overlayMaps, { position: 'topleft' }).addTo(map);
@@ -287,12 +930,28 @@
             },
             onEachFeature: function(feature, layer) {
               if (feature.properties) {
-                var html = '<table>';
+                var html = '<div style="font-family: Arial, sans-serif; min-width: 250px;">';
+                html += '<h4 style="margin: 0 0 10px 0; color: #ffffff; border-bottom: 1px solid #ffffff; padding-bottom: 5px;">Informações da Propriedade</h4>';
+                html += '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
+                var count = 0;
                 for (var key in feature.properties) {
-                  html += '<tr><td><b>' + key + '</b></td><td>' + feature.properties[key] + '</td></tr>';
+                  if (key === 'Shape_Leng' || key === 'Shape_Area') continue;
+                  var label = key;
+                  if (key === 'IDENTIFIC') label = 'Matrícula';
+                  else if (key === 'AREA_HA') label = 'Área (ha)';
+                  else if (key === 'MUNICIPIO') label = 'Município';
+                  else if (key === 'AGLOMERADO') label = 'Aglomerado';
+                  else if (key === 'PROPRIEDAD') label = 'Fazenda';
+                  
+                  html += '<tr>';
+                  html += '<td style="padding: 4px 8px; font-weight: bold; color: #ffffff; border-right: 1px solid rgba(255,255,255,0.3); width: 35%;">' + label + '</td>';
+                  html += '<td style="padding: 4px 8px; color: #ffffff; width: 65%;">' + feature.properties[key] + '</td>';
+                  html += '</tr>';
+                  count++;
                 }
                 html += '</table>';
-                layer.bindPopup(html);
+                html += '</div>';
+                layer.bindPopup(html, {maxWidth: 300, className: 'custom-popup'});
               }
             }
           });
@@ -320,12 +979,28 @@
             style: { color: color, weight: 2, fillOpacity: 0.2 },
             onEachFeature: function(feature, layer) {
               if (feature.properties) {
-                var html = '<table>';
+                var html = '<div style="font-family: Arial, sans-serif; min-width: 250px;">';
+                html += '<h4 style="margin: 0 0 10px 0; color: #ffffff; border-bottom: 1px solid #ffffff; padding-bottom: 5px;">Informações da Propriedade</h4>';
+                html += '<table style="width: 100%; border-collapse: collapse; font-size: 13px;">';
+                var count = 0;
                 for (var key in feature.properties) {
-                  html += '<tr><td><b>' + key + '</b></td><td>' + feature.properties[key] + '</td></tr>';
+                  if (key === 'Shape_Leng' || key === 'Shape_Area') continue;
+                  var label = key;
+                  if (key === 'IDENTIFIC') label = 'Matrícula';
+                  else if (key === 'AREA_HA') label = 'Área (ha)';
+                  else if (key === 'MUNICIPIO') label = 'Município';
+                  else if (key === 'AGLOMERADO') label = 'Aglomerado';
+                  else if (key === 'PROPRIEDAD') label = 'Fazenda';
+                  
+                  html += '<tr>';
+                  html += '<td style="padding: 4px 8px; font-weight: bold; color: #ffffff; border-right: 1px solid rgba(255,255,255,0.3); width: 35%;">' + label + '</td>';
+                  html += '<td style="padding: 4px 8px; color: #ffffff; width: 65%;">' + feature.properties[key] + '</td>';
+                  html += '</tr>';
+                  count++;
                 }
                 html += '</table>';
-                layer.bindPopup(html);
+                html += '</div>';
+                layer.bindPopup(html, {maxWidth: 300, className: 'custom-popup'});
               }
             }
           });
@@ -483,7 +1158,12 @@
       primaryAreaUnit: 'sqmeters',
       secondaryAreaUnit: 'hectares',
       activeColor: '#db4a29',
-      completedColor: '#9b2d14'
+      completedColor: '#9b2d14',
+      showClearControl: true,
+      showUnitControl: true,
+      clearMeasurementsOnStop: false,
+      measureControlTitleOn: 'Clique para parar de medir',
+      measureControlTitleOff: 'Clique para medir distâncias e áreas'
     }).addTo(map);
 
     // Botão customizado de upload (controle Leaflet)
@@ -598,6 +1278,244 @@
     });
     map.addControl(new DMSControl());
 
+    // Controle de filtro AIR
+    var FilterControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-filter leaflet-bar');
+        container.innerHTML = `
+          <h4>Seletor de Fazenda</h4>
+          <select id="filter-property">
+            <option value="">Selecione uma propriedade</option>
+          </select>
+          <button id="btn-aplicar-filtro">Aplicar Filtro</button>
+          <button id="btn-limpar-filtro" class="btn-limpar-filtro">Limpar Filtro</button>
+        `;
+        
+        // Carregar propriedades únicas quando a camada AIR estiver disponível
+        var checkAIRLayer = setInterval(function() {
+          if (overlayMaps['AIR']) {
+            clearInterval(checkAIRLayer);
+            loadUniqueProperties();
+          }
+        }, 1000);
+        
+        function loadUniqueProperties() {
+          var properties = new Set();
+          overlayMaps['AIR'].eachLayer(function(layer) {
+            if (layer.feature && layer.feature.properties && layer.feature.properties.PROPRIEDAD) {
+              properties.add(layer.feature.properties.PROPRIEDAD);
+            }
+          });
+          
+          var select = container.querySelector('#filter-property');
+          properties.forEach(function(prop) {
+            var option = L.DomUtil.create('option', '', select);
+            option.value = prop;
+            option.textContent = prop;
+          });
+        }
+        
+        // Aplicar filtro
+        container.querySelector('#btn-aplicar-filtro').onclick = function() {
+          var selectedProperty = container.querySelector('#filter-property').value;
+          if (selectedProperty && overlayMaps['AIR']) {
+            applyFilterByAttribute('PROPRIEDAD', selectedProperty);
+          }
+        };
+        
+        // Limpar filtro
+        container.querySelector('#btn-limpar-filtro').onclick = function() {
+          clearAllFilters();
+        };
+        
+        L.DomEvent.disableClickPropagation(container);
+        return container;
+      }
+    });
+    
+
+    
+    map.addControl(new FilterControl());
+
+    // Controle de filtro para Matrícula
+    var FilterMatriculaControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-filter leaflet-bar');
+        container.innerHTML = `
+          <h4>Seletor de Matrícula</h4>
+          <select id="filter-matricula">
+            <option value="">Selecione uma matrícula</option>
+          </select>
+          <button id="btn-aplicar-filtro-matricula">Aplicar Filtro</button>
+          <button id="btn-limpar-filtro-matricula" class="btn-limpar-filtro">Limpar Filtro</button>
+        `;
+        
+        // Carregar matrículas únicas quando a camada AIR estiver disponível
+        var checkAIRLayer = setInterval(function() {
+          if (overlayMaps['AIR']) {
+            clearInterval(checkAIRLayer);
+            loadUniqueMatriculas();
+          }
+        }, 1000);
+        
+        function loadUniqueMatriculas() {
+          var matriculas = new Set();
+          overlayMaps['AIR'].eachLayer(function(layer) {
+            if (layer.feature && layer.feature.properties && layer.feature.properties.IDENTIFIC) {
+              matriculas.add(layer.feature.properties.IDENTIFIC);
+            }
+          });
+          
+          var select = container.querySelector('#filter-matricula');
+          matriculas.forEach(function(matricula) {
+            var option = L.DomUtil.create('option', '', select);
+            option.value = matricula;
+            option.textContent = matricula;
+          });
+        }
+        
+        // Aplicar filtro
+        container.querySelector('#btn-aplicar-filtro-matricula').onclick = function() {
+          var selectedMatricula = container.querySelector('#filter-matricula').value;
+          if (selectedMatricula && overlayMaps['AIR']) {
+            applyFilterByAttribute('IDENTIFIC', selectedMatricula);
+          }
+        };
+        
+        // Limpar filtro
+        container.querySelector('#btn-limpar-filtro-matricula').onclick = function() {
+          clearAllFilters();
+        };
+        
+        L.DomEvent.disableClickPropagation(container);
+        return container;
+      }
+    });
+
+    // Controle de filtro para Aglomerado
+    var FilterAglomeradoControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-filter leaflet-bar');
+        container.innerHTML = `
+          <h4>Seletor de Aglomerado</h4>
+          <select id="filter-aglomerado">
+            <option value="">Selecione um aglomerado</option>
+          </select>
+          <button id="btn-aplicar-filtro-aglomerado">Aplicar Filtro</button>
+          <button id="btn-limpar-filtro-aglomerado" class="btn-limpar-filtro">Limpar Filtro</button>
+        `;
+        
+        // Carregar aglomerados únicos quando a camada AIR estiver disponível
+        var checkAIRLayer = setInterval(function() {
+          if (overlayMaps['AIR']) {
+            clearInterval(checkAIRLayer);
+            loadUniqueAglomerados();
+          }
+        }, 1000);
+        
+        function loadUniqueAglomerados() {
+          var aglomerados = new Set();
+          overlayMaps['AIR'].eachLayer(function(layer) {
+            if (layer.feature && layer.feature.properties && layer.feature.properties.AGLOMERADO) {
+              aglomerados.add(layer.feature.properties.AGLOMERADO);
+            }
+          });
+          
+          var select = container.querySelector('#filter-aglomerado');
+          aglomerados.forEach(function(aglomerado) {
+            var option = L.DomUtil.create('option', '', select);
+            option.value = aglomerado;
+            option.textContent = aglomerado;
+          });
+        }
+        
+        // Aplicar filtro
+        container.querySelector('#btn-aplicar-filtro-aglomerado').onclick = function() {
+          var selectedAglomerado = container.querySelector('#filter-aglomerado').value;
+          if (selectedAglomerado && overlayMaps['AIR']) {
+            applyFilterByAttribute('AGLOMERADO', selectedAglomerado);
+          }
+        };
+        
+        // Limpar filtro
+        container.querySelector('#btn-limpar-filtro-aglomerado').onclick = function() {
+          clearAllFilters();
+        };
+        
+        L.DomEvent.disableClickPropagation(container);
+        return container;
+      }
+    });
+
+    // Função genérica para aplicar filtro por atributo
+    function applyFilterByAttribute(attributeName, attributeValue) {
+      if (overlayMaps['AIR']) {
+        var selectedLayer = null;
+        
+        overlayMaps['AIR'].eachLayer(function(layer) {
+          if (layer.feature && layer.feature.properties) {
+            if (layer.feature.properties[attributeName] === attributeValue) {
+              layer.setStyle({
+                color: '#ff0000',
+                weight: 4,
+                fillOpacity: 0.6
+              });
+              layer.bringToFront();
+              selectedLayer = layer;
+            } else {
+              layer.setStyle({
+                color: '#000000',
+                weight: 1,
+                fillOpacity: 0.1
+              });
+            }
+          }
+        });
+        
+        // Centralizar o polígono selecionado com transição suave
+        if (selectedLayer) {
+          var bounds = selectedLayer.getBounds();
+          if (bounds.isValid()) {
+            map.fitBounds(bounds, {
+              padding: [50, 50],
+              maxZoom: 16,
+              animate: true,
+              duration: 1.5
+            });
+          }
+        }
+      }
+    }
+
+    // Função para limpar todos os filtros
+    function clearAllFilters() {
+      if (overlayMaps['AIR']) {
+        overlayMaps['AIR'].eachLayer(function(layer) {
+          layer.setStyle({
+            color: '#000000',
+            weight: 2,
+            fillOpacity: 0.2
+          });
+        });
+        
+        // Voltar ao zoom original da camada AIR
+        var airBounds = overlayMaps['AIR'].getBounds();
+        if (airBounds.isValid()) {
+          map.fitBounds(airBounds, {
+            padding: [20, 20],
+            animate: true,
+            duration: 1.0
+          });
+        }
+      }
+    }
+
+    map.addControl(new FilterMatriculaControl());
+    map.addControl(new FilterAglomeradoControl());
+
     // Função para adicionar camada ao mapa e ao controle
     function addLayerToMap(layer, name) {
       overlayMaps[name] = layer;
@@ -651,6 +1569,17 @@
         e.target.value = '';
       }
     });
+
+    // Botão retrátil dos controles
+    document.getElementById('toggle-controls').onclick = function() {
+      var mapDiv = document.getElementById('map');
+      if (mapDiv.classList.contains('leaflet-controls-hidden')) {
+        mapDiv.classList.remove('leaflet-controls-hidden');
+      } else {
+        mapDiv.classList.add('leaflet-controls-hidden');
+      }
+    };
+    } // Fechamento da função initMap()
   </script>
 </body>
 </html>
